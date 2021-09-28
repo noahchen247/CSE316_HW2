@@ -134,7 +134,7 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
-    deleteList = () => {
+    deleteList = (pair) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
@@ -151,6 +151,10 @@ class App extends React.Component {
     hideDeleteListModal() {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
+    }
+    moveItem(oldIndex, newIndex) {
+        let newList = this.state.currentList;
+        newList.splice(newIndex, 0, this.items.splice(oldIndex, 1)[0]);
     }
     render() {
         return (
@@ -170,6 +174,7 @@ class App extends React.Component {
                 <Workspace
                     currentList={this.state.currentList} 
                     renameItemCallback={this.renameItem}
+                    moveItemCallback={this.moveItem}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />

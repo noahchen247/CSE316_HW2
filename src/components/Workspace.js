@@ -4,7 +4,8 @@ import Item from './Item.js'
 export default class Workspace extends React.Component {
     render() {
         const {currentList,
-               renameItemCallback} = this.props;
+               renameItemCallback,
+               moveItemCallback} = this.props;
         return (
             <div id="top5-workspace">
                 <div id="workspace-edit">
@@ -25,6 +26,7 @@ export default class Workspace extends React.Component {
                                     text = {item}
                                     index = {index}
                                     renameItemCallback={renameItemCallback}
+                                    moveItemCallback={moveItemCallback}
                                 /> 
                             )))
                         ) : null

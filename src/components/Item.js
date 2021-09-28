@@ -12,7 +12,6 @@ export default class Item extends React.Component {
 
     handleClick = (event) => {
         if (event.detail === 2) {
-            console.log("a");
             this.handleToggleEdit(event);
         }
     }
@@ -36,6 +35,27 @@ export default class Item extends React.Component {
         this.handleToggleEdit();
     }
 
+    dragStart = (event) => {
+        console.log("picked up " + this.props.index);
+        event.dataTransfer.setData("Text", this.props.index);
+    }
+    dragOver = (event) => {
+        //NEED TO MAKE GREEN
+        console.log("dragging over element");
+        event.preventDefault();
+    }
+    dragLeave = (event) => {
+        //RETURN TO NORMAL
+        console.log("leaving drag");
+        event.preventDefault();
+    }
+    drop = (event) => {
+        //BULK
+        console.log("dropped on " + this.props.index);
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     render() {
         const { text } = this.props;
         const { index } = this.props.index;
@@ -56,7 +76,12 @@ export default class Item extends React.Component {
                 <div 
                     id = {index} 
                     className = "top5-item"
-                    onClick={this.handleClick}>    
+                    onClick={this.handleClick}
+                    draggable="true"
+                    onDragStart={this.dragStart}
+                    onDragOver={this.dragOver}
+                    onDragLeave={this.dragLeave}
+                    onDrop={this.drop}> 
                         {text}
                 </div>
             )
