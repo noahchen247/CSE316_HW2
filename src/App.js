@@ -153,8 +153,14 @@ class App extends React.Component {
         modal.classList.remove("is-visible");
     }
     moveItem(oldIndex, newIndex) {
-        let newList = this.state.currentList;
+        let newList = this.state.currentList.items;
         newList.splice(newIndex, 0, this.items.splice(oldIndex, 1)[0]);
+        this.setState(prevState => ({
+            currentList: newList,
+            sessionData: prevState.sessionData
+        }), () => {
+            this.db.mutationUpdateList(this.state.currentList);
+        });
     }
     render() {
         return (
