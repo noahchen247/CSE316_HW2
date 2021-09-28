@@ -152,15 +152,16 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
-    moveItem(oldIndex, newIndex) {
-        let newList = this.state.currentList.items;
-        newList.splice(newIndex, 0, this.items.splice(oldIndex, 1)[0]);
+    moveItem = (oldIndex, newIndex) => {
+        let newList = this.state.currentList;
+        newList.items.splice(newIndex, 0, newList.items.splice(oldIndex, 1)[0]);
         this.setState(prevState => ({
             currentList: newList,
             sessionData: prevState.sessionData
         }), () => {
             this.db.mutationUpdateList(this.state.currentList);
         });
+        //console.log(this.state.currentList.items);
     }
     render() {
         return (

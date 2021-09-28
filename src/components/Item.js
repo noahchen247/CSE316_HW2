@@ -6,7 +6,8 @@ export default class Item extends React.Component {
 
         this.state = {
             text: this.props.text,
-            editActive: false
+            editActive: false,
+            className: "top5-item"
         }
     }
 
@@ -36,24 +37,32 @@ export default class Item extends React.Component {
     }
 
     dragStart = (event) => {
-        console.log("picked up " + this.props.index);
+        //console.log("picked up " + this.props.index);
         event.dataTransfer.setData("Text", this.props.index);
     }
     dragOver = (event) => {
-        //NEED TO MAKE GREEN
-        console.log("dragging over element");
         event.preventDefault();
+        this.setState({
+            className: "top5-item-dragged-to"
+        })
     }
     dragLeave = (event) => {
-        //RETURN TO NORMAL
-        console.log("leaving drag");
         event.preventDefault();
+        this.setState({
+            className: "top5-item"
+        })
     }
     drop = (event) => {
-        //BULK
-        console.log("dropped on " + this.props.index);
+        //console.log("dropped on " + this.props.index);
+        //console.log("oldIndex " + event.dataTransfer.getData("Text"));
+        let oldIndex = parseInt(event.dataTransfer.getData("Text"));
+        let newIndex = this.props.index;
         event.preventDefault();
         event.stopPropagation();
+        this.props.moveItemCallback(parseInt(oldIndex), newIndex);
+        this.setState({
+            className: "top5-item"
+        })
     }
 
     render() {
@@ -75,7 +84,7 @@ export default class Item extends React.Component {
             return (
                 <div 
                     id = {index} 
-                    className = "top5-item"
+                    className = {this.state.className}
                     onClick={this.handleClick}
                     draggable="true"
                     onDragStart={this.dragStart}
