@@ -22,7 +22,7 @@ export default class Workspace extends React.Component {
                         currentList != null ? (
                             currentList.items.map(((item, index) => (
                                 <Item
-                                    key = {item}
+                                    key = {currentList.name+"-"+index}
                                     text = {item}
                                     index = {index}
                                     renameItemCallback={renameItemCallback}

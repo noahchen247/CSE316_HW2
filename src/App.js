@@ -24,6 +24,7 @@ class App extends React.Component {
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
+            listKeyPairMarkedForDeletion: null,
             sessionData : loadedSessionData
         }
     }
@@ -139,13 +140,20 @@ class App extends React.Component {
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
-        this.showDeleteListModal();
+        this.showDeleteListModal(pair);
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
+    showDeleteListModal(pair) {
         let modal = document.getElementById("delete-modal");
         modal.classList.add("is-visible");
+        this.setState(prevState => ({
+            currentList: this.state.currentList,
+            listKeyPairMarkedForDeletion: pair,
+            sessionData: prevState.sessionData
+        }), () => {
+            //???
+        });
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
     hideDeleteListModal() {
@@ -162,6 +170,32 @@ class App extends React.Component {
             this.db.mutationUpdateList(this.state.currentList);
         });
         //console.log(this.state.currentList.items);
+    }
+    actuallyDeleteList = () => {
+        let indexToDelete = this.state.sessionData.keyNamePairs.indexOf(this.state.listKeyPairMarkedForDeletion);
+        this.hideDeleteListModal();
+        if (this.state.currentList !== null && this.state.listKeyPairMarkedForDeletion.key === this.state.currentList.key) {
+            let newSessionData = this.state.sessionData;
+            newSessionData.keyNamePairs.splice(indexToDelete, 1);
+            this.setState(prevState => ({
+                currentList: null,
+                listKeyPairMarkedForDeletion : null,
+                sessionData: newSessionData
+            }), () => {
+                // ANY AFTER EFFECTS?
+            });
+        }
+        else {
+            let newSessionData = this.state.sessionData;
+            newSessionData.keyNamePairs.splice(indexToDelete, 1);
+            this.setState(prevState => ({
+                currentList: prevState.currentList,
+                listKeyPairMarkedForDeletion : null,
+                sessionData: newSessionData
+            }), () => {
+                // ANY AFTER EFFECTS?
+            });
+        }
     }
     render() {
         return (
@@ -186,7 +220,9 @@ class App extends React.Component {
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
+                    listKeyPair={this.state.listKeyPairMarkedForDeletion}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
+                    actuallyDeleteListCallback={this.actuallyDeleteList}
                 />
             </div>
         );
