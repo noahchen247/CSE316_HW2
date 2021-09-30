@@ -25,6 +25,11 @@ class App extends React.Component {
         let loadedSessionData = this.db.queryGetSessionData();
 
         this.tps = new jsTPS();
+        this.tps.clearAllTransactions();
+
+        this.closeTest = "top5-button-disabled";
+        this.undoTest = "top5-button-disabled";
+        this.redoTest = "top5-button-disabled";
 
         // SETUP THE INITIAL STATE
         this.state = {
@@ -123,6 +128,8 @@ class App extends React.Component {
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
         let newCurrentList = this.db.queryGetList(key);
+        this.closeTest = "top5-button";
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
@@ -132,6 +139,10 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        this.closeTest = "top5-button-disabled";
+        this.undoTest = "top5-button-disabled";
+        this.redoTest = "top5-button-disabled";
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: null,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
@@ -179,6 +190,7 @@ class App extends React.Component {
     actuallyDeleteList = () => {
         let indexToDelete = this.state.sessionData.keyNamePairs.indexOf(this.state.listKeyPairMarkedForDeletion);
         this.hideDeleteListModal();
+        this.tps.clearAllTransactions();
         if (this.state.currentList !== null && this.state.listKeyPairMarkedForDeletion.key === this.state.currentList.key) {
             let newSessionData = this.state.sessionData;
             newSessionData.keyNamePairs.splice(indexToDelete, 1);
@@ -206,12 +218,29 @@ class App extends React.Component {
         console.log("undo");
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
+            this.updateUndoRedo();
         }
     }
     redo = () => {
         console.log("redo");
         if (this.tps.hasTransactionToRedo()) {
             this.tps.doTransaction();
+            this.updateUndoRedo();
+        }
+    }
+    updateUndoRedo = () => {
+        let checkTPS = this.tps;
+        if(!checkTPS.hasTransactionToUndo()) {
+            this.undoTest="top5-button-disabled";
+        }
+        else {
+            this.undoTest="top5-button";
+        }
+        if(!checkTPS.hasTransactionToRedo()) {
+            this.redoTest="top5-button-disabled";
+        }
+        else {
+            this.redoTest="top5-button";
         }
     }
     addChangeItemTransaction = (id, newText) => {
@@ -219,10 +248,12 @@ class App extends React.Component {
         let oldText = this.state.currentList.items[id];
         let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
         this.tps.addTransaction(transaction);
+        this.updateUndoRedo();
     }
     addMoveItemTransaction = (oldIndex, newIndex) => {
         let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
         this.tps.addTransaction(transaction);
+        this.updateUndoRedo();
     }
     render() {
         return (
@@ -232,6 +263,9 @@ class App extends React.Component {
                     closeCallback={this.closeCurrentList}
                     undoCallback={this.undo}
                     redoCallback={this.redo} 
+                    close={this.closeTest}
+                    undo={this.undoTest}
+                    redo={this.redoTest}
                 />
                 <Sidebar
                     heading='Your Lists'

@@ -6,13 +6,19 @@ export default class Banner extends React.Component {
         const {title,
                closeCallback,
                undoCallback,
-               redoCallback} = this.props;
+               redoCallback,
+               close,
+               undo,
+               redo} = this.props;
         return (
             <div id="top5-banner">
                 {title}
                 <EditToolbar closeCallback={closeCallback}
                              undoCallback={undoCallback}
-                             redoCallback={redoCallback}/>
+                             redoCallback={redoCallback}
+                             close={close}
+                             undo={undo}
+                             redo={redo}/>
             </div>
         );
     }
