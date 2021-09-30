@@ -32,7 +32,8 @@ export default class Item extends React.Component {
     handleBlur = () => {
         let textValue = this.state.text;
         console.log("Item handleBlur: " + textValue);
-        this.props.renameItemCallback( this.props.index, textValue);
+        //this.props.renameItemCallback( this.props.index, textValue);
+        this.props.addChangeItemTransactionCallback(this.props.index, textValue);
         this.handleToggleEdit();
     }
 
@@ -59,7 +60,8 @@ export default class Item extends React.Component {
         let newIndex = this.props.index;
         event.preventDefault();
         event.stopPropagation();
-        this.props.moveItemCallback(parseInt(oldIndex), newIndex);
+        //this.props.moveItemCallback(parseInt(oldIndex), newIndex);
+        this.props.addMoveItemTransactionCallback(parseInt(oldIndex), newIndex);
         this.setState({
             className: "top5-item"
         })

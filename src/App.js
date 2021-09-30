@@ -204,23 +204,19 @@ class App extends React.Component {
     }
     undo = () => {
         console.log("undo");
-        /*
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
         }
-        */
     }
     redo = () => {
         console.log("redo");
-        /*
         if (this.tps.hasTransactionToRedo()) {
             this.tps.doTransaction();
         }
-        */
     }
     addChangeItemTransaction = (id, newText) => {
         // GET THE CURRENT TEXT
-        let oldText = this.currentList.items[id];
+        let oldText = this.state.currentList.items[id];
         let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
         this.tps.addTransaction(transaction);
     }
@@ -250,6 +246,8 @@ class App extends React.Component {
                     currentList={this.state.currentList} 
                     renameItemCallback={this.renameItem}
                     moveItemCallback={this.moveItem}
+                    addChangeItemTransactionCallback={this.addChangeItemTransaction}
+                    addMoveItemTransactionCallback={this.addMoveItemTransaction}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />
