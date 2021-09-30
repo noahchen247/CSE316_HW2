@@ -255,6 +255,21 @@ class App extends React.Component {
         this.tps.addTransaction(transaction);
         this.updateUndoRedo();
     }
+    handleKey = (event) => {
+        if (event.ctrlKey && event.key === 'z') {
+            console.log("undo key");
+        }
+        else if (event.ctrlKey && event.key === 'y') {
+            console.log("redo key");
+        }
+    }
+    //MIGHT HAVE TO CHANGE IF WE CAN'T DO DOCUMENT
+    componentDidMount = () => {
+        document.addEventListener('keydown',this.handleKey);
+    }
+    componentWillUnmount = () => {
+        document.addEventListener('keydown',this.handleKey);
+    }
     render() {
         return (
             <div id="app-root">
