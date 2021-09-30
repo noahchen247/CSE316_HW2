@@ -10,6 +10,9 @@ import Banner from './components/Banner.js'
 import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js'
+import jsTPS from './common/jsTPS';
+import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
+import MoveItem_Transaction from "./transactions/MoveItem_Transaction.js"
 
 class App extends React.Component {
     constructor(props) {
@@ -20,6 +23,8 @@ class App extends React.Component {
 
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
+
+        this.tps = new jsTPS();
 
         // SETUP THE INITIAL STATE
         this.state = {
@@ -197,12 +202,41 @@ class App extends React.Component {
             });
         }
     }
+    undo = () => {
+        console.log("undo");
+        /*
+        if (this.tps.hasTransactionToUndo()) {
+            this.tps.undoTransaction();
+        }
+        */
+    }
+    redo = () => {
+        console.log("redo");
+        /*
+        if (this.tps.hasTransactionToRedo()) {
+            this.tps.doTransaction();
+        }
+        */
+    }
+    addChangeItemTransaction = (id, newText) => {
+        // GET THE CURRENT TEXT
+        let oldText = this.currentList.items[id];
+        let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
+        this.tps.addTransaction(transaction);
+    }
+    addMoveItemTransaction = (oldIndex, newIndex) => {
+        let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
+        this.tps.addTransaction(transaction);
+    }
     render() {
         return (
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeCallback={this.closeCurrentList}
+                    undoCallback={this.undo}
+                    redoCallback={this.redo} 
+                />
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}
