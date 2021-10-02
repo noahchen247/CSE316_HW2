@@ -31,6 +31,8 @@ class App extends React.Component {
         this.undoTest = "top5-button-disabled";
         this.redoTest = "top5-button-disabled";
 
+        this.addTest = "top5-button";
+
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
@@ -63,6 +65,9 @@ class App extends React.Component {
         let updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
         this.sortKeyNamePairsByName(updatedPairs);
 
+        this.closeTest = "top5-button";
+        this.addTest = "top5-button-disabled";
+
         // CHANGE THE APP STATE SO THAT IT THE CURRENT LIST IS
         // THIS NEW LIST AND UPDATE THE SESSION DATA SO THAT THE
         // NEXT LIST CAN BE MADE AS WELL. NOTE, THIS setState WILL
@@ -80,6 +85,7 @@ class App extends React.Component {
             // PUTTING THIS NEW LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
             this.db.mutationCreateList(newList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
     renameList = (key, newName) => {
@@ -129,6 +135,7 @@ class App extends React.Component {
     loadList = (key) => {
         let newCurrentList = this.db.queryGetList(key);
         this.closeTest = "top5-button";
+        this.addTest = "top5-button-disabled";
         this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: newCurrentList,
@@ -142,6 +149,7 @@ class App extends React.Component {
         this.closeTest = "top5-button-disabled";
         this.undoTest = "top5-button-disabled";
         this.redoTest = "top5-button-disabled";
+        this.addTest = "top5-button";
         this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: null,
@@ -192,6 +200,7 @@ class App extends React.Component {
         this.hideDeleteListModal();
         this.tps.clearAllTransactions();
         if (this.state.currentList !== null && this.state.listKeyPairMarkedForDeletion.key === this.state.currentList.key) {
+            this.addTest = "top5-button";
             let newSessionData = this.state.sessionData;
             newSessionData.keyNamePairs.splice(indexToDelete, 1);
             this.setState(prevState => ({
@@ -199,7 +208,7 @@ class App extends React.Component {
                 listKeyPairMarkedForDeletion : null,
                 sessionData: newSessionData
             }), () => {
-                // ANY AFTER EFFECTS?
+                this.db.mutationUpdateSessionData(this.state.sessionData);
             });
         }
         else {
@@ -210,7 +219,7 @@ class App extends React.Component {
                 listKeyPairMarkedForDeletion : null,
                 sessionData: newSessionData
             }), () => {
-                // ANY AFTER EFFECTS?
+                this.db.mutationUpdateSessionData(this.state.sessionData);
             });
         }
     }
@@ -268,7 +277,7 @@ class App extends React.Component {
         document.addEventListener('keydown',this.handleKey);
     }
     componentWillUnmount = () => {
-        document.addEventListener('keydown',this.handleKey);
+        document.removeEventListener('keydown',this.handleKey);
     }
     render() {
         return (
@@ -290,6 +299,7 @@ class App extends React.Component {
                     deleteListCallback={this.deleteList}
                     loadListCallback={this.loadList}
                     renameListCallback={this.renameList}
+                    add={this.addTest}
                 />
                 <Workspace
                     currentList={this.state.currentList} 
