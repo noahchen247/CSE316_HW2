@@ -255,6 +255,9 @@ class App extends React.Component {
     addChangeItemTransaction = (id, newText) => {
         // GET THE CURRENT TEXT
         let oldText = this.state.currentList.items[id];
+        if (oldText === newText) {
+            return;
+        }
         let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
         this.tps.addTransaction(transaction);
         this.updateUndoRedo();

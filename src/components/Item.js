@@ -61,7 +61,9 @@ export default class Item extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         //this.props.moveItemCallback(parseInt(oldIndex), newIndex);
-        this.props.addMoveItemTransactionCallback(parseInt(oldIndex), newIndex);
+        if (oldIndex !== newIndex) {
+            this.props.addMoveItemTransactionCallback(parseInt(oldIndex), newIndex);
+        }
         this.setState({
             className: "top5-item"
         })
@@ -79,7 +81,9 @@ export default class Item extends React.Component {
                     onKeyPress={this.handleKeyPress}
                     onBlur={this.handleBlur}
                     onChange={this.handleUpdate}
-                    defaultValue={text}></input>
+                    defaultValue={text}
+                    autoFocus>    
+                </input>
             )
         }
         else {
