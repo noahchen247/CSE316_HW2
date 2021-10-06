@@ -2,12 +2,23 @@ import React from "react";
 import Item from './Item.js'
 
 export default class Workspace extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.itemClass = "edit-items";
+    }
     render() {
         const {currentList,
                renameItemCallback,
                moveItemCallback,
                addChangeItemTransactionCallback,
                addMoveItemTransactionCallback} = this.props;
+        if (currentList === null) {
+            this.itemClass = "";
+        }
+        else {
+            this.itemClass = "edit-items";
+        }
         return (
             <div id="top5-workspace">
                 <div id="workspace-edit">
@@ -19,7 +30,7 @@ export default class Workspace extends React.Component {
                         <div className="item-number">5.</div>
                     </div>
                 </div>
-                <div id="edit-items">
+                <div id={this.itemClass}>
                     {
                         currentList != null ? (
                             currentList.items.map(((item, index) => (

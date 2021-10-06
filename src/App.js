@@ -137,6 +137,7 @@ class App extends React.Component {
         this.closeTest = "top5-button";
         this.addTest = "top5-button-disabled";
         this.tps.clearAllTransactions();
+        this.updateUndoRedo();
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
@@ -201,6 +202,7 @@ class App extends React.Component {
         this.tps.clearAllTransactions();
         if (this.state.currentList !== null && this.state.listKeyPairMarkedForDeletion.key === this.state.currentList.key) {
             this.addTest = "top5-button";
+            this.closeTest = "top5-button-disabled";
             let newSessionData = this.state.sessionData;
             newSessionData.keyNamePairs.splice(indexToDelete, 1);
             this.setState(prevState => ({

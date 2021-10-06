@@ -149,7 +149,7 @@ body {
 
 #edit-toolbar {
   position:absolute;
-  left:0%;
+  left:1%;
   top:20%;
   height:60%;
   background-color: var(--swatch-primary);
